@@ -219,27 +219,36 @@ class MainWindow(QMainWindow):
             margin: 15px;
             padding: 15px;
         """)
-
+    
         # 添加阴影效果
         shadow = QGraphicsDropShadowEffect(self)
         shadow.setBlurRadius(10)
         shadow.setOffset(5, 5)
         shadow.setColor(QColor(0, 0, 0, 50))
         card.setGraphicsEffect(shadow)
-
+    
         card_layout = QVBoxLayout(card)
-
+    
+        # 添加封面图片
+        if "thumb" in post and post["thumb"]:  # 确保有封面图片
+            cover_label = QLabel(card)
+            cover_pixmap = QPixmap()
+            cover_pixmap.loadFromData(requests.get(post["thumb"]).content)
+            cover_pixmap = cover_pixmap.scaledToWidth(300, Qt.SmoothTransformation)  # 宽度固定为300，高度自动调整
+            cover_label.setPixmap(cover_pixmap)
+            card_layout.addWidget(cover_label)
+    
         # 标题
         title = QLabel(post["title"], card)
         title.setStyleSheet("font-size: 20px; color: #2c3e50; font-weight: bold; margin-bottom: 10px;")
         card_layout.addWidget(title)
-
+    
         # 内容
         content = QLabel(post["content"], card)
         content.setStyleSheet("font-size: 16px; color: #7f8c8d; margin-bottom: 10px;")
         content.setWordWrap(True)  # 自动换行
         card_layout.addWidget(content)
-
+    
         return card
 
 
