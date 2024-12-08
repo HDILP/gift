@@ -3,7 +3,7 @@ import requests
 from math import ceil
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QPainter, QBrush, QPainterPath, QColor
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QFrame, QGraphicsDropShadowEffect, QHBoxLayout
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QFrame, QGraphicsDropShadowEffect, QHBoxLayout, QGridLayout
 
 class MainWindow(QMainWindow):
     def __init__(self):
