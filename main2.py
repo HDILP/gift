@@ -47,7 +47,8 @@ class MainWindow(QMainWindow):
         self.load_user_data()
         self.load_posts()
     def get_api(self, types):
-        url = "https://api.yaerxing.com/GetSTUserData"
+        url1 = "https://api.yaerxing.com/GetSTUserData"
+        url2 = "https://api.yaerxing.com/GetSTUserNotes2"
 
         payload1 = {
         'unionid': "otJFa09hMXKizNDdufEyjjTEKkAw",
@@ -99,11 +100,11 @@ class MainWindow(QMainWindow):
         }
 
         if types == 'data':
-            data = requests.post(url, data=payload1, headers=headers).json()
+            data = requests.post(url1, data=payload1, headers=headers).json()
             return data
         
         elif types == 'notes': 
-            notes = requests.post(url, data=payload2, headers=headers).json()
+            notes = requests.post(url2, data=payload2, headers=headers).json()
             return notes
     def create_profile_info(self):
         profile_frame = QFrame(self)
