@@ -13,7 +13,7 @@ class MainWindow(QMainWindow):
         self.setGeometry(100, 100, 1280, 720)
     
         # 设置背景图片
-        self.set_background_image("/root/gift/bg.png")
+        self.set_background_image("/root/gift/bg.jpg")
     
         # 创建主窗口内容
         self.main_widget = QWidget(self)
@@ -29,7 +29,7 @@ class MainWindow(QMainWindow):
         self.post_area = QScrollArea(self)
         self.post_area.setStyleSheet("""
             QScrollArea {
-                background: rgba(255, 255, 255, 0.6);  /* 半透明白色背景 */
+                background: rgba(255, 255, 255, 0);  /* 半透明白色背景 */
                 border: none;
                 border-radius: 10px;
             }
@@ -75,7 +75,7 @@ class MainWindow(QMainWindow):
     def create_profile_info(self):
         profile_frame = QFrame(self)
         profile_frame.setStyleSheet("""
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.5);
             border-radius: 15px;
             padding: 20px;
             border: 1px solid #ddd;
@@ -105,7 +105,7 @@ class MainWindow(QMainWindow):
     def create_post_card(self, post):
         # 创建卡片容器
         card = QFrame(self)
-        card.setFixedWidth(500)
+        card.setFixedWidth(600)
 
         # 使用自定义绘制方法，模拟毛玻璃效果
         card.setStyleSheet("border-radius: 10px; margin: 15px; padding: 10px;")
@@ -118,7 +118,7 @@ class MainWindow(QMainWindow):
             painter.setRenderHint(QPainter.SmoothPixmapTransform)
 
             # 绘制一个半透明的矩形覆盖区域
-            painter.setBrush(QBrush(QColor(255, 255, 255, 80)))  # 半透明白色
+            painter.setBrush(QBrush(QColor(255, 255, 255, 50)))  # 半透明白色
             painter.setPen(Qt.NoPen)
             rect = card.rect()
             painter.drawRoundedRect(rect, 10, 10)  # 圆角矩形
@@ -147,13 +147,13 @@ class MainWindow(QMainWindow):
 
         # 标题
         title = QLabel(post["title"], card)
-        title.setStyleSheet("font-size: 20px; color: #2c3e50; font-weight: bold; margin-bottom: 5px;")
+        title.setStyleSheet("font-size: 20px; color: #f9e9cd; font-weight: bold; margin-bottom: 5px;")
         title.setWordWrap(True)  # 自动换行
         text_layout.addWidget(title)
 
         # 内容
         content = QLabel(post["content"], card)
-        content.setStyleSheet("font-size: 16px; color: #7f8c8d;")
+        content.setStyleSheet("font-size: 16px; color: #fbf2e3;")
         content.setWordWrap(True)  # 自动换行
         text_layout.addWidget(content)
 
