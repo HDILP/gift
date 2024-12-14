@@ -114,50 +114,60 @@ class MainWindow(QMainWindow):
         """)
 
     def create_profile_info(self):
+        # 主框架
         profile_frame = QFrame(self)
         profile_frame.setStyleSheet("""
-    background-color: rgba(255, 255, 255, 0.5); /* 半透明白色 */
-    border-radius: 15px;
-    padding: 20px;
-    border: 1px solid #ddd;
-""")
-        # 创建阴影效果
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(15)  # 阴影模糊半径
-        shadow.setOffset(0, 5)    # 阴影偏移量 (x, y)
-        shadow.setColor(QColor(0, 0, 0, 80))  # 阴影颜色 (半透明黑色)
-        
-        # 将阴影效果应用到控件
-        profile_frame.setGraphicsEffect(shadow)
-        profile_layout = QHBoxLayout(profile_frame)
-
-        # 头像
+            background-color: rgba(255, 255, 255, 0.6); /* 半透明白色 */
+            border-radius: 20px;
+            padding: 15px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        """)
+    
+        # 添加阴影
+        self.add_shadow(profile_frame, blur_radius=20, offset=(0, 8), color=QColor(0, 0, 0, 100))
+    
+        # 栅格布局
+        profile_layout = QGridLayout(profile_frame)
+    
+        # 头像部分
         self.avatar_label = QLabel(self)
-        self.avatar_label.setStyleSheet("border-radius: 75px; background-color: transparent;")
-        self.avatar_label.setFixedSize(200, 200)
+        self.avatar_label.setStyleSheet("""
+            border-radius: 50%; /* 圆形头像 */
+            background-color: #f0f0f0; /* 默认背景 */
+        """)
+        self.avatar_label.setFixedSize(150, 150)
         self.avatar_label.setAlignment(Qt.AlignCenter)
-        shadow = QGraphicsDropShadowEffect(self)
-        shadow.setBlurRadius(15)
-        shadow.setOffset(0, 5)
-        self.avatar_label.setGraphicsEffect(shadow)
-        profile_layout.addWidget(self.avatar_label)
-
-        # 用户名与简介
+        self.add_shadow(self.avatar_label, blur_radius=15, offset=(0, 5), color=QColor(0, 0, 0, 80))
+        profile_layout.addWidget(self.avatar_label, 0, 0, 2, 1, Qt.AlignCenter)
+    
+        # 文本部分
         text_layout = QVBoxLayout()
+    
         # 用户名
         self.username_label = QLabel('@YourUsername', self)
-        self.username_label.setStyleSheet("font-size: 24px; color: #2c3e50; font-weight: bold;")
-        self.add_shadow(self.username_label,blur_radius=10, offset=(0, 2), color=QColor(0, 0, 0, 150))
+        self.username_label.setStyleSheet("""
+            font-size: 22px;
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 5px;
+        """)
+        self.username_label.setAlignment(Qt.AlignLeft)
+        self.add_shadow(self.username_label, blur_radius=10, offset=(0, 2), color=QColor(0, 0, 0, 120))
+        text_layout.addWidget(self.username_label)
+    
         # 简介
         self.bio_label = QLabel('This is your bio. Add something interesting here!', self)
-        self.bio_label.setStyleSheet("font-size: 16px; color: #7f8c8d;")
+        self.bio_label.setStyleSheet("""
+            font-size: 16px;
+            color: #7f8c8d;
+        """)
+        self.bio_label.setWordWrap(True)
+        self.bio_label.setAlignment(Qt.AlignLeft)
         self.add_shadow(self.bio_label, blur_radius=10, offset=(0, 2), color=QColor(0, 0, 0, 100))
-
-        text_layout.addWidget(self.username_label)
         text_layout.addWidget(self.bio_label)
-
-        profile_layout.addLayout(text_layout)
-        self.layout.addWidget(profile_frame)
+    
+        profile_layout.addLayout(text_layout, 0, 1, 1, 2)
+    
         # 添加分割线
         divider = QFrame(self)
         divider.setFrameShape(QFrame.HLine)
@@ -165,89 +175,87 @@ class MainWindow(QMainWindow):
             background: qlineargradient(
                 spread: pad, x1:0, y1:0, x2:1, y2:0,
                 stop: 0 rgba(255, 255, 255, 0),
-                stop: 0.5 rgba(255, 255, 255, 0.5),
+                stop: 0.5 rgba(255, 255, 255, 0.3),
                 stop: 1 rgba(255, 255, 255, 0)
             );
             height: 2px;
             border: none;
         """)
+        self.layout.addWidget(profile_frame)
         self.layout.addWidget(divider)
 
+
     def create_post_card(self, post):
-        # 创建卡片容器
+        """
+        创建一张优化后的文章卡片，增加卡片高度。
+        """
+        # 创建卡片框架
         card = QFrame(self)
-        card.setFixedWidth(600)
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(20)
-        shadow.setOffset(0, 8)
-        shadow.setColor(QColor(0, 0, 0, 100))  # 阴影颜色
-        
-        card.setGraphicsEffect(shadow)
-
-        # 使用自定义绘制方法，模拟毛玻璃效果
         card.setStyleSheet("""
-    background-color: rgba(255, 255, 255, 0.3); /* 更高透明度 */
-    border-radius: 15px;
-    border: 1px solid #ccc;
-    padding: 20px;
-""")
-
-
-        card_layout = QHBoxLayout(card)
-
-        # 模拟毛玻璃效果的背景绘制
-        def paintEvent(event):
-            painter = QPainter(card)
-            painter.setRenderHint(QPainter.Antialiasing)
-            painter.setRenderHint(QPainter.SmoothPixmapTransform)
-
-            # 绘制一个半透明的矩形覆盖区域
-            painter.setBrush(QBrush(QColor(255, 255, 255, 50)))  # 半透明白色
-            painter.setPen(Qt.NoPen)
-            rect = card.rect()
-            painter.drawRoundedRect(rect, 10, 10)  # 圆角矩形
-
-        card.paintEvent = paintEvent
-
+            background-color: rgba(255, 255, 255, 0.5);  /* 提高透明度 */
+            border-radius: 15px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        """)
+        self.add_shadow(card, blur_radius=20, offset=(0, 8), color=QColor(0, 0, 0, 100))
+        
+        # 设置卡片最小高度
+        card.setMinimumHeight(250)  # 调整高度
+    
+        # 卡片主布局
+        card_layout = QVBoxLayout(card)
+        card_layout.setContentsMargins(10, 10, 10, 10)
+        card_layout.setSpacing(10)
+    
+        # 上半部分布局（图片和标题+内容）
+        top_layout = QHBoxLayout()
+    
         # 图片部分
-        if "thumb" in post and post["thumb"]:  # 确保有图片数据
-            cover_label = QLabel(card)
-            cover_pixmap = QPixmap()
-            cover_pixmap.loadFromData(requests.get(post["thumb"]).content)
-
-            # 固定图片宽度为 200px，高度按比例动态计算
+        if "thumb" in post and post["thumb"]:
+            image_label = QLabel(card)
+            image_pixmap = QPixmap()
+            image_pixmap.loadFromData(requests.get(post["thumb"]).content)
+    
+            # 使用原逻辑动态调整图片高度
             fixed_width = 200
-            scaled_pixmap = cover_pixmap.scaledToWidth(fixed_width, Qt.SmoothTransformation)
-
-            # 设置 QLabel 显示图片
-            cover_label.setPixmap(scaled_pixmap)
-            cover_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # 让布局决定大小
-            cover_label.setAlignment(Qt.AlignCenter)
-            card_layout.addWidget(cover_label)
-
+            scaled_pixmap = image_pixmap.scaledToWidth(fixed_width, Qt.SmoothTransformation)
+            image_label.setPixmap(scaled_pixmap)
+            image_label.setAlignment(Qt.AlignCenter)
+            image_label.setStyleSheet("border-radius: 10px;")  # 圆角图片
+            top_layout.addWidget(image_label)
+    
         # 文本部分
         text_layout = QVBoxLayout()
-        text_layout.setContentsMargins(5, 0, 0, 0)  # 设置图片与文本之间的间距
-
+    
         # 标题
-        title = QLabel(post["title"], card)
-        title.setStyleSheet("font-size: 20px; color: #2c3e50; font-weight: bold; margin-bottom: 5px;")
-        title.setWordWrap(True)
-        self.add_shadow(title, blur_radius=10, offset=(0, 3), color=QColor(0, 0, 0, 150))
-        text_layout.addWidget(title)
-        
+        title_label = QLabel(post.get("title", "Untitled"), card)
+        title_label.setStyleSheet("""
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        """)
+        title_label.setWordWrap(True)
+        self.add_shadow(title_label, blur_radius=10, offset=(0, 3), color=QColor(0, 0, 0, 120))
+        text_layout.addWidget(title_label)
+    
         # 内容
-        content = QLabel(post["content"], card)
-        content.setStyleSheet("font-size: 16px; color: #34495e;")
-        content.setWordWrap(True)
-        self.add_shadow(content, blur_radius=8, offset=(0, 2), color=QColor(0, 0, 0, 100))
-        text_layout.addWidget(content)
-
-
-        # 将文本部分添加到主布局
-        card_layout.addLayout(text_layout)
+        content_label = QLabel(post.get("content", ""), card)
+        content_label.setStyleSheet("""
+            font-size: 14px;
+            color: #34495e;
+        """)
+        content_label.setWordWrap(True)
+        text_layout.addWidget(content_label)
+    
+        # 将文本部分添加到上半部分
+        top_layout.addLayout(text_layout)
+        card_layout.addLayout(top_layout)
 
         return card
+
+
+
+
         
     def get_api(self, types):
         url1 = "https://api.yaerxing.com/GetSTUserData"
@@ -336,49 +344,39 @@ class MainWindow(QMainWindow):
     def load_posts(self):
         try:
             posts = self.get_api('notes').get("notes", [])
-            print(posts)
+            print("Starting load_posts...")
     
-            # 如果 scroll_widget 已有布局，先清除
-            existing_layout = self.scroll_widget.layout()
-            if existing_layout is not None:
-                QWidget().setLayout(existing_layout)  # 防止内存泄漏
+            # 强制重置 scroll_widget
+            self.scroll_widget.deleteLater()  # 删除旧的 widget
+            self.scroll_widget = QWidget(self)
+            self.scroll_widget.setStyleSheet("background: transparent;")  # 保持透明
+            self.post_area.setWidget(self.scroll_widget)
     
-            # 设置新的 QGridLayout
-            self.posts_layout = QGridLayout(self.scroll_widget)
-            self.posts_layout.setSpacing(15)  # 卡片之间的间距
+            # 创建新的布局
+            main_layout = QHBoxLayout()
+            left_column = QVBoxLayout()
+            right_column = QVBoxLayout()
+    
+            main_layout.addLayout(left_column)
+            main_layout.addLayout(right_column)
     
             for index, post in enumerate(posts):
                 card = self.create_post_card(post)
-            
-                # 计算行和列位置
-                row = index // 2  # 两列
-                column = index % 2
-                self.posts_layout.addWidget(card, row, column)
-            
-                # 如果是最后一列，添加分割线（只添加在行末）
-                if column == 1:
-                    divider = QFrame(self.scroll_widget)
-                    divider.setFrameShape(QFrame.HLine)
-                    divider.setStyleSheet("""
-    background: qlineargradient(
-        spread: pad, x1:0, y1:0, x2:1, y2:0,
-        stop: 0 rgba(255, 255, 255, 0),
-        stop: 0.5 rgba(255, 255, 255, 0.3),
-        stop: 1 rgba(255, 255, 255, 0)
-    );
-    height: 2px;
-    border: none;
-""")
-
-                    self.posts_layout.addWidget(divider, row + 1, 0, 1, 2)  # 跨两列
-
+                if index % 2 == 0:
+                    left_column.addWidget(card)
+                else:
+                    right_column.addWidget(card)
     
-        except requests.exceptions.RequestException as e:
-            print(f"Error fetching data: {e}")
-            error_message = QLabel("Failed to load articles.", self)
-            error_message.setStyleSheet("font-size: 14px; color: red;")
-            self.posts_layout.addWidget(error_message)
+            left_column.addStretch()
+            right_column.addStretch()
     
+            # 设置布局
+            print("Setting new layout...")
+            self.scroll_widget.setLayout(main_layout)
+            print("New layout set successfully.")
+    
+        except Exception as e:
+            print(f"Error in load_posts: {e}")
     
     def get_circular_pixmap(self, pixmap, size):
         """
