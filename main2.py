@@ -28,20 +28,25 @@ class MainWindow(QMainWindow):
         # 创建文章显示区域
         self.post_area = QScrollArea(self)
         self.post_area.setStyleSheet("""
-            QScrollArea {
-                background: rgba(255, 255, 255, 0);  /* 半透明白色背景 */
-                border: none;
-                border-radius: 10px;
-            }
-            QScrollBar:vertical {
-                width: 10px;
-                background: transparent;
-            }
-            QScrollBar::handle:vertical {
-                background: #3498db;
-                border-radius: 5px;
-            }
-        """)
+    QScrollArea {
+        background: rgba(255, 255, 255, 0.3); /* 半透明白色背景 */
+        border-radius: 15px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    QScrollBar:vertical {
+        width: 12px;
+        background: transparent;
+    }
+    QScrollBar::handle:vertical {
+        background: #3498db;
+        border-radius: 6px;
+    }
+    QScrollBar::handle:vertical:hover {
+        background: #2980b9;
+    }
+""")
+
+
         self.layout.addWidget(self.post_area)
     
         # 创建文章内容部件，并使其背景透明
@@ -57,6 +62,42 @@ class MainWindow(QMainWindow):
         self.load_user_data()
         self.load_posts()
 
+        # 页面底部分割线
+        footer_divider = QFrame(self)
+        footer_divider.setFrameShape(QFrame.HLine)
+        footer_divider.setStyleSheet("""
+            background: qlineargradient(
+                spread: pad, x1:0, y1:0, x2:1, y2:0,
+                stop: 0 rgba(255, 255, 255, 0),
+                stop: 0.5 rgba(255, 255, 255, 0.3),
+                stop: 1 rgba(255, 255, 255, 0)
+            );
+            height: 2px;
+            border: none;
+        """)
+        self.layout.addWidget(footer_divider)
+
+    def add_shadow(self, widget, blur_radius=15, offset=(0, 5), color=QColor(0, 0, 0, 100)):
+        """
+        为指定控件添加阴影效果。
+        :param widget: 需要添加阴影的控件
+        :param blur_radius: 阴影模糊半径
+        :param offset: 阴影的偏移量 (x, y)
+        :param color: 阴影的颜色
+        """
+        shadow = QGraphicsDropShadowEffect()
+        shadow.setBlurRadius(blur_radius)
+        shadow.setOffset(*offset)
+        shadow.setColor(color)
+        widget.setGraphicsEffect(shadow)
+        
+    def add_shadows_to_labels(self, parent_widget):
+        """
+        为父控件内的所有 QLabel 添加阴影效果。
+        :param parent_widget: 父控件
+        """
+        for child in parent_widget.findChildren(QLabel):
+            self.add_shadow(child, blur_radius=10, offset=(0, 2), color=QColor(0, 0, 0, 120))
 
 
     def set_background_image(self, image_path):
@@ -75,40 +116,83 @@ class MainWindow(QMainWindow):
     def create_profile_info(self):
         profile_frame = QFrame(self)
         profile_frame.setStyleSheet("""
-            background-color: rgba(255, 255, 255, 0.5);
-            border-radius: 15px;
-            padding: 20px;
-            border: 1px solid #ddd;
-        """)
+    background-color: rgba(255, 255, 255, 0.5); /* 半透明白色 */
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid #ddd;
+""")
+        # 创建阴影效果
+        shadow = QGraphicsDropShadowEffect()
+        shadow.setBlurRadius(15)  # 阴影模糊半径
+        shadow.setOffset(0, 5)    # 阴影偏移量 (x, y)
+        shadow.setColor(QColor(0, 0, 0, 80))  # 阴影颜色 (半透明黑色)
+        
+        # 将阴影效果应用到控件
+        profile_frame.setGraphicsEffect(shadow)
         profile_layout = QHBoxLayout(profile_frame)
 
         # 头像
         self.avatar_label = QLabel(self)
         self.avatar_label.setStyleSheet("border-radius: 75px; background-color: transparent;")
-        self.avatar_label.setFixedSize(150, 150)
+        self.avatar_label.setFixedSize(200, 200)
         self.avatar_label.setAlignment(Qt.AlignCenter)
+        shadow = QGraphicsDropShadowEffect(self)
+        shadow.setBlurRadius(15)
+        shadow.setOffset(0, 5)
+        self.avatar_label.setGraphicsEffect(shadow)
         profile_layout.addWidget(self.avatar_label)
 
         # 用户名与简介
         text_layout = QVBoxLayout()
+        # 用户名
         self.username_label = QLabel('@YourUsername', self)
         self.username_label.setStyleSheet("font-size: 24px; color: #2c3e50; font-weight: bold;")
-        text_layout.addWidget(self.username_label)
-
+        self.add_shadow(self.username_label,blur_radius=10, offset=(0, 2), color=QColor(0, 0, 0, 150))
+        # 简介
         self.bio_label = QLabel('This is your bio. Add something interesting here!', self)
         self.bio_label.setStyleSheet("font-size: 16px; color: #7f8c8d;")
+        self.add_shadow(self.bio_label, blur_radius=10, offset=(0, 2), color=QColor(0, 0, 0, 100))
+
+        text_layout.addWidget(self.username_label)
         text_layout.addWidget(self.bio_label)
 
         profile_layout.addLayout(text_layout)
         self.layout.addWidget(profile_frame)
+        # 添加分割线
+        divider = QFrame(self)
+        divider.setFrameShape(QFrame.HLine)
+        divider.setStyleSheet("""
+            background: qlineargradient(
+                spread: pad, x1:0, y1:0, x2:1, y2:0,
+                stop: 0 rgba(255, 255, 255, 0),
+                stop: 0.5 rgba(255, 255, 255, 0.5),
+                stop: 1 rgba(255, 255, 255, 0)
+            );
+            height: 2px;
+            border: none;
+        """)
+        self.layout.addWidget(divider)
 
     def create_post_card(self, post):
         # 创建卡片容器
         card = QFrame(self)
         card.setFixedWidth(600)
+        shadow = QGraphicsDropShadowEffect()
+        shadow.setBlurRadius(20)
+        shadow.setOffset(0, 8)
+        shadow.setColor(QColor(0, 0, 0, 100))  # 阴影颜色
+        
+        card.setGraphicsEffect(shadow)
 
         # 使用自定义绘制方法，模拟毛玻璃效果
-        card.setStyleSheet("border-radius: 10px; margin: 15px; padding: 10px;")
+        card.setStyleSheet("""
+    background-color: rgba(255, 255, 255, 0.3); /* 更高透明度 */
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    padding: 20px;
+""")
+
+
         card_layout = QHBoxLayout(card)
 
         # 模拟毛玻璃效果的背景绘制
@@ -147,15 +231,18 @@ class MainWindow(QMainWindow):
 
         # 标题
         title = QLabel(post["title"], card)
-        title.setStyleSheet("font-size: 20px; color: #f9e9cd; font-weight: bold; margin-bottom: 5px;")
-        title.setWordWrap(True)  # 自动换行
+        title.setStyleSheet("font-size: 20px; color: #2c3e50; font-weight: bold; margin-bottom: 5px;")
+        title.setWordWrap(True)
+        self.add_shadow(title, blur_radius=10, offset=(0, 3), color=QColor(0, 0, 0, 150))
         text_layout.addWidget(title)
-
+        
         # 内容
         content = QLabel(post["content"], card)
-        content.setStyleSheet("font-size: 16px; color: #fbf2e3;")
-        content.setWordWrap(True)  # 自动换行
+        content.setStyleSheet("font-size: 16px; color: #34495e;")
+        content.setWordWrap(True)
+        self.add_shadow(content, blur_radius=8, offset=(0, 2), color=QColor(0, 0, 0, 100))
         text_layout.addWidget(content)
+
 
         # 将文本部分添加到主布局
         card_layout.addLayout(text_layout)
@@ -262,11 +349,29 @@ class MainWindow(QMainWindow):
     
             for index, post in enumerate(posts):
                 card = self.create_post_card(post)
-    
+            
                 # 计算行和列位置
                 row = index // 2  # 两列
                 column = index % 2
                 self.posts_layout.addWidget(card, row, column)
+            
+                # 如果是最后一列，添加分割线（只添加在行末）
+                if column == 1:
+                    divider = QFrame(self.scroll_widget)
+                    divider.setFrameShape(QFrame.HLine)
+                    divider.setStyleSheet("""
+    background: qlineargradient(
+        spread: pad, x1:0, y1:0, x2:1, y2:0,
+        stop: 0 rgba(255, 255, 255, 0),
+        stop: 0.5 rgba(255, 255, 255, 0.3),
+        stop: 1 rgba(255, 255, 255, 0)
+    );
+    height: 2px;
+    border: none;
+""")
+
+                    self.posts_layout.addWidget(divider, row + 1, 0, 1, 2)  # 跨两列
+
     
         except requests.exceptions.RequestException as e:
             print(f"Error fetching data: {e}")
