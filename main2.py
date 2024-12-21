@@ -13,7 +13,7 @@ class MainWindow(QMainWindow):
         self.setGeometry(100, 100, 1280, 720)
     
         # 设置背景图片
-        self.set_background_image("/root/gift/bg.jpg")
+        self.set_background_image("/root/gift/bg2.png")
     
         # 创建主窗口内容
         self.main_widget = QWidget(self)
@@ -29,9 +29,9 @@ class MainWindow(QMainWindow):
         self.post_area = QScrollArea(self)
         self.post_area.setStyleSheet("""
     QScrollArea {
-        background: rgba(255, 255, 255, 0.3); /* 半透明白色背景 */
+        background: rgba(254, 223, 225, 0); /* 半透明白色背景 */
         border-radius: 15px;
-        border: 1px solid rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(0, 0, 0, 0);
     }
     QScrollBar:vertical {
         width: 12px;
@@ -68,9 +68,9 @@ class MainWindow(QMainWindow):
         footer_divider.setStyleSheet("""
             background: qlineargradient(
                 spread: pad, x1:0, y1:0, x2:1, y2:0,
-                stop: 0 rgba(255, 255, 255, 0),
-                stop: 0.5 rgba(255, 255, 255, 0.3),
-                stop: 1 rgba(255, 255, 255, 0)
+                stop: 0 rgba(255, 170, 178, 0),
+                stop: 0.5 rgba(255, 170, 178, 0.8),
+                stop: 1 rgba(255, 170, 178, 0)
             );
             height: 2px;
             border: none;
@@ -109,7 +109,6 @@ class MainWindow(QMainWindow):
                 background-image: url({image_path});
                 background-position: center;
                 background-repeat: no-repeat;
-                background-size: cover;
             }}
         """)
 
@@ -117,10 +116,10 @@ class MainWindow(QMainWindow):
         # 主框架
         profile_frame = QFrame(self)
         profile_frame.setStyleSheet("""
-            background-color: rgba(255, 255, 255, 0.6); /* 半透明白色 */
+            background-color: rgba(254, 223, 225, 0.3); /* 半透明白色 */
             border-radius: 20px;
             padding: 15px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0);
         """)
     
         # 添加阴影
@@ -147,7 +146,7 @@ class MainWindow(QMainWindow):
         self.username_label = QLabel('@YourUsername', self)
         self.username_label.setStyleSheet("""
             font-size: 22px;
-            color: #2c3e50;
+            color: #F596AA;
             font-weight: bold;
             margin-bottom: 5px;
         """)
@@ -159,7 +158,7 @@ class MainWindow(QMainWindow):
         self.bio_label = QLabel('This is your bio. Add something interesting here!', self)
         self.bio_label.setStyleSheet("""
             font-size: 16px;
-            color: #7f8c8d;
+            color: #B19693;
         """)
         self.bio_label.setWordWrap(True)
         self.bio_label.setAlignment(Qt.AlignLeft)
@@ -174,9 +173,9 @@ class MainWindow(QMainWindow):
         divider.setStyleSheet("""
             background: qlineargradient(
                 spread: pad, x1:0, y1:0, x2:1, y2:0,
-                stop: 0 rgba(255, 255, 255, 0),
-                stop: 0.5 rgba(255, 255, 255, 0.3),
-                stop: 1 rgba(255, 255, 255, 0)
+                stop: 0 rgba(255, 170, 178, 0),
+                stop: 0.5 rgba(255, 170, 178, 0.8),
+                stop: 1 rgba(255, 170, 178, 0)
             );
             height: 2px;
             border: none;
@@ -192,11 +191,12 @@ class MainWindow(QMainWindow):
         # 创建卡片框架
         card = QFrame(self)
         card.setStyleSheet("""
-            background-color: rgba(255, 255, 255, 0.5);  /* 提高透明度 */
-            border-radius: 15px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
+            background-color: rgba(254, 223, 225, 0.1);  /* 提高透明度 */
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(0, 0, 0, 0);
         """)
-        self.add_shadow(card, blur_radius=20, offset=(0, 8), color=QColor(0, 0, 0, 100))
+        self.add_shadow(card, blur_radius=30, offset=(0, 8), color=QColor(0, 0, 0, 100))
         
         # 设置卡片最小高度
         card.setMinimumHeight(250)  # 调整高度
@@ -231,18 +231,20 @@ class MainWindow(QMainWindow):
         title_label.setStyleSheet("""
             font-size: 18px;
             font-weight: bold;
-            color: #2c3e50;
+            color: #F8C3CD;
             margin-bottom: 5px;
+            background: transparent;
         """)
         title_label.setWordWrap(True)
-        self.add_shadow(title_label, blur_radius=10, offset=(0, 3), color=QColor(0, 0, 0, 120))
+        # self.add_shadow(title_label, blur_radius=10, offset=(0, 3), color=QColor(0, 0, 0, 120))
         text_layout.addWidget(title_label)
     
         # 内容
         content_label = QLabel(post.get("content", ""), card)
         content_label.setStyleSheet("""
             font-size: 14px;
-            color: #34495e;
+            color: #FEDFE1;
+            background: transparent;
         """)
         content_label.setWordWrap(True)
         text_layout.addWidget(content_label)
@@ -252,9 +254,6 @@ class MainWindow(QMainWindow):
         card_layout.addLayout(top_layout)
 
         return card
-
-
-
 
         
     def get_api(self, types):
@@ -356,9 +355,8 @@ class MainWindow(QMainWindow):
             main_layout = QHBoxLayout()
             left_column = QVBoxLayout()
             right_column = QVBoxLayout()
-    
-            main_layout.addLayout(left_column)
-            main_layout.addLayout(right_column)
+            main_layout.addLayout(left_column, 1)
+            main_layout.addLayout(right_column, 1)
     
             for index, post in enumerate(posts):
                 card = self.create_post_card(post)
