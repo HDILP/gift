@@ -1,8 +1,8 @@
-import sys
+import sys, json
 import requests
 from math import ceil
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap, QPainter, QBrush, QPainterPath, QColor
+from PyQt5.QtGui import QPixmap, QPainter, QBrush, QPainterPath, QColor, QFont, QFontDatabase
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QScrollArea, QFrame, QGraphicsDropShadowEffect, QHBoxLayout, QGridLayout, QSizePolicy, QGraphicsBlurEffect
 
 
@@ -10,10 +10,10 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Profile')
-        self.setGeometry(100, 100, 1280, 720)
+        self.setGeometry(100, 100, 1920, 1080)
     
         # 设置背景图片
-        self.set_background_image("/root/gift/bg2.png")
+        self.set_background_image("bg2.png")
     
         # 创建主窗口内容
         self.main_widget = QWidget(self)
@@ -240,7 +240,7 @@ class MainWindow(QMainWindow):
         text_layout.addWidget(title_label)
     
         # 内容
-        content_label = QLabel(post.get("content", ""), card)
+        content_label = QLabel(json.loads(post.get("content", "")).get('text'), card)
         content_label.setStyleSheet("""
             font-size: 14px;
             color: #FEDFE1;
@@ -407,7 +407,13 @@ class MainWindow(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    font_id = QFontDatabase.addApplicationFont("./GenJyuuGothicX-Regular.ttf")
+    font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
+
+    font = QFont(font_family, 12)
+    app.setFont(font)
     app.setStyle('Fusion')  # 使用 Fusion 样式
+
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())

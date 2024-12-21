@@ -10,7 +10,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Profile')
-        self.setGeometry(100, 100, 1280, 720)
+        self.setGeometry(100, 100, 1920, 1080)
     
         # 设置背景图片
         # self.set_background_image("/root/gift/bg.jpg")
